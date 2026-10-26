@@ -81,10 +81,10 @@ spec:
     name: nginx
     ports:
       - containerPort: 8080
-  PriorityClassName: high-priority
+  priorityClassName: high-priority
 ```
 
-In the Pod definition file, specify the name of the PriorityClass in the `PriorityClassName:` field of the Pod.
+In the Pod definition file, specify the name of the PriorityClass in the `priorityClassName:` field of the Pod.
 
 If we do not assign a PriorityClass to a Pod, it will default to 0 (to all pods).
 
