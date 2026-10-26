@@ -42,6 +42,18 @@ system-cluster-critical     2000000000   false            461d   PreemptLowerPri
 system-node-critical        2000001000   false            461d   PreemptLowerPriority
 ```
 
+**Describe Priority Classes**
+
+Use this kubectl command:
+```
+kubectl describe priorityClass <Priority Classes Name>
+```
+
+**Get a quick Priority Class YAML template**
+```
+kubectl get priorityClass system-node-critical -o yaml
+```
+
 ##### Create a Priority Class
 
 ```
