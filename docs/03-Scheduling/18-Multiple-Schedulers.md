@@ -23,6 +23,10 @@ In this section, we will take a look at multiple schedulers
     ```
     $ kubectl create -f my-custom-scheduler.yaml
     ```
+
+Another option worth noting when configuring a scheduler is the `leaderElection` option/section.
+
+This option is useful if we have multiple schedulers across different master nodes. If several copies of the scheduler are active within the cluster, only one can be the active instance.
   
 ## View Schedulers
 - To list the scheduler pods
