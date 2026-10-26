@@ -106,6 +106,12 @@ description: "This priority class should be used for XYZ service pods only."
 preemptionPolicy: PreemptLowerPriority
 ```
 
+**Compare the priority classes on pods**
+
+```
+kubectl get pods -o custom-columns="NAME:.metadata.name,PRIORITY:.spec.priorityClassName"
+```
+
 
 If the `preemptionPolicy` field is not defined, it defaults to `PreemptLowerPriority`.
 
