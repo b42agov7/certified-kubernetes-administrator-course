@@ -98,3 +98,55 @@ $ kubectl rollout undo deployment/myapp-deployment
 #### K8s Reference Docs
 - https://kubernetes.io/docs/concepts/workloads/controllers/deployment
 - https://kubernetes.io/docs/tasks/run-application/run-stateless-application-deployment
+
+
+#### Perso
+
+Stratégie rolling:
+```
+kubectl get deployment frontend -o yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    deployment.kubernetes.io/revision: "2"
+  creationTimestamp: "2026-10-27T20:25:40Z"
+  generation: 2
+  name: frontend
+  namespace: default
+  resourceVersion: "1362"
+  uid: 1aae068d-686e-4412-b7f8-f048e99f5565
+spec:
+  minReadySeconds: 20
+  progressDeadlineSeconds: 600
+  replicas: 4
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      name: webapp
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        name: webapp
+    spec:
+      containers:
+      - image: kodekloud/webapp-color:v2
+        imagePullPolicy: IfNotPresent
+        name: simple-webapp
+        ports:
+        - containerPort: 8080
+          protocol: TCP
+        resources: {}
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      terminationGracePeriodSeconds: 30
+```
