@@ -102,7 +102,7 @@ $ kubectl rollout undo deployment/myapp-deployment
 
 #### Perso
 
-Stratégie rolling:
+Stratégie deployment:
 ```
 kubectl get deployment frontend -o yaml
 apiVersion: apps/v1
