@@ -51,5 +51,7 @@ In this section, we will take a look at commands and arguments in docker
 ## Entrypoint Instruction
 - The entrypoint instruction is like the command instruction as in you can specify the program that will be run when the container starts and whatever you specify on the command line.
 
+
+
 #### K8s Reference Docs
 - https://docs.docker.com/engine/reference/builder/#cmd
