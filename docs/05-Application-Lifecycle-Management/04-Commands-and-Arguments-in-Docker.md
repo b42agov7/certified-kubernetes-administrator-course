@@ -47,11 +47,41 @@ In this section, we will take a look at commands and arguments in docker
   ```
   
   ![sleep2](../../images/sleep2.PNG)
+
+To change the command argument, without having to call back the command when running the container like that: 
+```docker run ubuntu+sleeper 10```
+
+We need to use the ENTRYPOINT statements
   
 ## Entrypoint Instruction
 - The entrypoint instruction is like the command instruction as in you can specify the program that will be run when the container starts and whatever you specify on the command line.
 
+```
+FROM Ubuntu
 
+ENTRYPOINT ["sleep"]
+```
+
+ENTRYPOINT defines the executable command. CMD provides the default arguments. 
+
+When using ENTRYPOINT, if you pass parameters to the Docker line, they will be added to the command specified in ENTRYPOINT.
+
+If you pass parameters while using the CMD instruction, the parameters will be fully replaced.
+
+Also in the case of ENTRYPOINT, if we don't pass an argument on the Docker command line, the program in ENTRYPOINT will have no parameters. To specify a default argument if nothing is applied, we need to use ENTRYPOINT and CMD
+
+```
+FROM Ubuntu
+
+ENTRYPOINT ["sleep"]
+
+CMD ["5"]
+```
+
+If we still want to replace everything, we need to use the --entrypoint option.
+```
+docker run --entrypoint sleep2 ubuntu-sleeper 10
+```
 
 #### K8s Reference Docs
 - https://docs.docker.com/engine/reference/builder/#cmd
