@@ -8,3 +8,49 @@ If an application can run as multiple instances, we can use horizontal scaling. 
 
 In short, horizontal scaling consists of adding more resources to our application.
 Horizontal autoscaling consists of automatically adding more instances or servers for our application.
+
+
+
+In Kubernetes, there are two types of scaling:
+
+Scaling Workload, which consists of adding or removing pods.
+
+Scaling Cluster infrastructure, which consists of adding servers to our cluster.
+
+In both cases, there are also two ways to go about it.
+
+For `Scaling Cluster Infrastructure`, **horizontal scaling** involves adding more servers, while **vertical scaling** involves increasing the resources of the servers.
+
+For `Scaling Workload`, **horizontal scaling** involves adding more pods, while **vertical scaling** involves increasing the resources of the pods.
+
+There are two ways to perform scaling: the manual approach and the automated approach.
+
+
+
+##### Manuel approche
+
+For `Cluster Infrastructure Scaling`, horizontal scaling involves adding more servers, while vertical scaling involves increasing the resources of the existing servers.
+
+For `Workload Scaling`, horizontal scaling involves adding more pods, while vertical scaling involves increasing the resources of a given pod.
+
+There are two approaches to scaling: manual and automated.
+
+Horizontal Scaling
+In the context of `Cluster Infrastructure Scaling`, the manual approach would be to add additional nodes using `kubeadm` (specifically, the `kubeadm join` command).
+
+Vertical Scaling
+A manual approach does not make sense here, as it would require shutting down the application.
+
+Horizontal Scaling
+In the context of `Workload Scaling`, the manual approach would be to use the `kubectl scale` command.
+
+Vertical Scaling
+The manual approach here involves using the `kubectl edit` command to increase the resources allocated to a pod.
+
+The automated method consists of the following:
+
+For `Horizontal scaling` in the context of `Cluster Infrastructure Scaling`, there is the `Cluster Autoscaler`.
+
+For `Horizontal scaling` in the context of `Workload Scaling`, there is the `Horizontal Pod Autoscaler` (HPA).
+
+For `Vertical scaling` in the context of `Workload Scaling`, there is the `Vertical Pod Autoscaler` (VPA).
