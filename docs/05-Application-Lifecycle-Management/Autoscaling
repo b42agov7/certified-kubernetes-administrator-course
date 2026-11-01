@@ -1,11 +1,10 @@
 ### Autoscaling
 
-What does "scaling" mean?
+What does scaling mean?
 
 Let’s go back to the time when applications were hosted on servers. What happens if the load on an application increases and there are no resources left? We would have to increase the server's physical resources—which first required shutting the server down. This is known as vertical scaling.
 
-There are two terms:
+If an application can run as multiple instances, we can use horizontal scaling. This involves adding more servers and distributing the load among them.
 
-Vertical autoscaling consists of adding more resources to an application.
-
-Horizontal autoscaling consists of adding more instances or more servers for an application.
+In short, horizontal scaling consists of adding more resources to our application.
+Horizontal autoscaling consists of automatically adding more instances or servers for our application.
