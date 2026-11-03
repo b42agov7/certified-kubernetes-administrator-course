@@ -25,6 +25,10 @@
   ![stg3](../../images/stg3.PNG)
   
 ## kubeadm - Upgrade master node
+
+Follow this doc: https://v1-36.docs.kubernetes.io/docs/tasks/administer-cluster/kubeadm/kubeadm-upgrade/
+
+
 - kubeadm has an upgrade command that helps in upgrading clusters.
   ```
   $ kubeadm upgrade plan
@@ -62,6 +66,7 @@
   ![kubeu1](../../images/kubeu1.PNG)
  
 ## kubeadm - Upgrade worker nodes
+
   
 - From master node, run 'kubectl drain' command to move the workloads to other nodes
   ```
