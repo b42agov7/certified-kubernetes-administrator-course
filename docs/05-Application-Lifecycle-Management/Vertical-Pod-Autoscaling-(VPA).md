@@ -111,6 +111,10 @@ To check the recommendations:
 kubectl describe vpa my-app-vpa
 ```
 
+```
+kubectl get vpa 
+```
+
 ##### Key Differences
 
 | Feature                 | VPA                                                            | HPA                                                              |
