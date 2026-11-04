@@ -43,20 +43,6 @@ In this section, we will take a look at backup and restore methods
   ![brc](../../images/brc.PNG)
   
 ## Backup - ETCD
-- So, instead of backing up resources as before, you may choose to backup the ETCD cluster itself. 
-  
-  ![be](../../images/be.PNG)
-  
-- You can take a snapshot of the etcd database by using **`etcdctl`** utility snapshot save command.
-  ```
-  $ ETCDCTL_API=3 etcdctl snapshot save snapshot.db
-  ```
-  ```
-  $  ETCDCTL_API=3 etcdctl snapshot status snapshot.db
-  ```
-  ![be1](../../images/be1.PNG)
-  
-## Restore - ETCD
 
 The ETCD cluster stores information about the state of our cluster.
 
@@ -65,6 +51,23 @@ So information about the cluster itself, the nodes and every other resources cre
 As we have seen, the etcd cluster is hosted on the master nodes.
 
 While configuring etcd, we specified a location where all the data would be stored. It's `--data-dir=/var/lib/etcd`
+
+- So, instead of backing up resources as before, you may choose to backup the ETCD cluster itself. 
+  
+  ![be](../../images/be.PNG)
+  
+- You can take a snapshot of the etcd database by using **`etcdctl`** utility snapshot save command.
+  ```
+  $ ETCDCTL_API=3 etcdctl snapshot save snapshot.db
+  ```
+
+  You can view the status of the backup using the snapshot status command.
+  ```
+  $  ETCDCTL_API=3 etcdctl snapshot status snapshot.db
+  ```
+  ![be1](../../images/be1.PNG)
+  
+## Restore - ETCD
 
 - To restore etcd from the backup at later in time. First stop kube-apiserver service
   ```
