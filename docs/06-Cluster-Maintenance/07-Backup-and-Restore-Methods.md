@@ -57,6 +57,15 @@ In this section, we will take a look at backup and restore methods
   ![be1](../../images/be1.PNG)
   
 ## Restore - ETCD
+
+The ETCD cluster stores information about the state of our cluster.
+
+So information about the cluster itself, the nodes and every other resources created within the cluster are stored here.
+
+As we have seen, the etcd cluster is hosted on the master nodes.
+
+While configuring etcd, we specified a location where all the data would be stored. It's `--data-dir=/var/lib/etcd`
+
 - To restore etcd from the backup at later in time. First stop kube-apiserver service
   ```
   $ service kube-apiserver stop
