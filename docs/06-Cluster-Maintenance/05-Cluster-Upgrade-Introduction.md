@@ -3,6 +3,19 @@
   
 #### Is it mandatory for all of the kubernetes components to have the same versions?
 - No, The components can be at different release versions.
+
+Since the kube-apiserver is the primary component in the control plane, and that is the component that all other components talk to, none of the other components should ever be at a version higher than the kube-apiserver.
+
+The controller manager and scheduler can be at one version lower.
+
+So if kube-apiserver was at X, controller-managers and kube-schedulers can be at X-1.
+
+The kubelet and the kubeproxy components can be at three versions lower, X-3.
+
+So if kube-apiserver was at 1.10, the controller-manager and scheduler could be at 1.10 or 1.9 and the kubelet and kubeproxy could be at 1.7.
+None of them could be at a version higher than the kube-apiserver like 1.11.
+
+Now this is not the case with kube control. The kube control utility could be at 1.11, a version higher than the API server, 1.10 the same version as the API server, or at 1.9 a version lower than the API server.
   
 #### At any time, kubernetes supports only up to the recent 3 minor versions
 - The recommended approach is to upgrade one minor version at a time.
