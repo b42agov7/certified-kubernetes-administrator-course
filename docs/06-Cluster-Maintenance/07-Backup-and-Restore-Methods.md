@@ -606,3 +606,55 @@ Pourquoi associer les deux ?
 Le conteneur vit dans sa propre bulle isolée et ne voit pas directement le disque dur du serveur. Grâce au mountPath, Kubernetes prend le dossier indiqué par le hostPath sur le serveur et le "branche" virtuellement à l'intérieur du conteneur.
 
 Ainsi, quand l'application écrit des données dans son mountPath, elles sont en réalité enregistrées en toute sécurité dans le hostPath sur le disque de la machine physique.
+
+
+---
+
+ETCDCTL_API=3 etcdctl snapshot save /opt/snapshot-pre-boot.db --endpoints=https://127.0.0.1:2379 --cacert=/etc/kubernetes/pki/etcd/ca.crt --cert=/etc/kubernetes/pki/etcd/server.crt --key=/etc/kubernetes/pki/etcd/server.key
+
+etcdutl snapshot status /opt/snapshot-pre-boot.db --write-out table
+
+crictl ps -a | grep "kube-apiserver"
+
+mkdir /tmp/kubernetes-backup
+
+mv /etc/kubernetes/manifests/kube-apiserver.yaml /tmp/kubernetes-backup/
+
+crictl ps -a | grep "kube-apiserver" ; echo ${?}
+
+etcdutl snapshot restore /opt/snapshot-pre-boot.db --data-dir=/var/lib/etcd-backup
+
+cp /etc/kubernetes/manifests/etcd.yaml /tmp/kubernetes-backup/etcd.yaml.bak
+
+diff -u /etc/kubernetes/manifests/etcd.yaml /tmp/kubernetes-backup/etcd.yaml.bak
+--- /etc/kubernetes/manifests/etcd.yaml 2026-11-05 12:46:08.650183244 +0000
++++ /tmp/kubernetes-backup/etcd.yaml.bak        2026-11-05 12:45:16.957485460 +0000
+@@ -88,7 +88,7 @@
+       type: DirectoryOrCreate
+     name: etcd-certs
+   - hostPath:
+-      path: /var/lib/etcd-backup
++      path: /var/lib/etcd
+       type: DirectoryOrCreate
+     name: etcd-data
+ status: {}
+
+crictl ps | grep "etcd"
+8284b992eb612       0a108f7189562       41 seconds ago      Running             etcd                      0                   67b13d5e737f9       etcd-controlplane                      kube-system
+
+mv /tmp/kubernetes-backup/kube-apiserver.yaml /etc/kubernetes/manifests/
+
+systemctl restart kubelet
+
+mv /etc/kubernetes/manifests/kube-controller-manager.yaml /tmp/kubernetes-backup/
+
+mv /etc/kubernetes/manifests/kube-scheduler.yaml /tmp/kubernetes-backup/
+
+sleep 30
+
+mv /tmp/kubernetes-backup/kube-scheduler.yaml /etc/kubernetes/manifests/
+
+mv /tmp/kubernetes-backup/kube-controller-manager.yaml /etc/kubernetes/manifests/
+
+
+sleep 20
