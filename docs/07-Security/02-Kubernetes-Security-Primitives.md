@@ -5,6 +5,8 @@ In this section, we will take a look at kubernetes security primitives
 
 ## Secure Hosts
 
+All access to these hosts must be secured root access disabled, password based authentication disabled, and only SSH key based authentication to be made available.
+
  ![sech](../../images/sech.PNG)
   
 ## Secure Kubernetes
