@@ -74,6 +74,8 @@ In this section, we will take a look at how to manage certificates and certifica
 
 ### Corection
 ```
+cat akshay.csr | base64 -w 0
+
 controlplane ~ ➜  cat akshay-csr-k8s.yaml 
 apiVersion: certificates.k8s.io/v1
 kind: CertificateSigningRequest
