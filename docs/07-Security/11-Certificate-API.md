@@ -30,9 +30,7 @@ In this section, we will take a look at how to manage certificates and certifica
     groups:
     - system:authenticated
     usages:
-    - digital signature
-    - key encipherment
-    - server auth
+    - client auth
     request:
       <certificate-goes-here>
   ```
