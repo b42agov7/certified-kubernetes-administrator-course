@@ -71,7 +71,42 @@ In this section, we will take a look at how to manage certificates and certifica
 #### K8s Reference Docs
 - https://kubernetes.io/docs/reference/access-authn-authz/certificate-signing-requests/
 - https://kubernetes.io/docs/tasks/tls/managing-tls-in-a-cluster/
+
+### Corection
+```
+controlplane ~ ➜  cat akshay-csr-k8s.yaml 
+apiVersion: certificates.k8s.io/v1
+kind: CertificateSigningRequest
+metadata:
+  name: akshay
+spec:
+  signerName: kubernetes.io/kube-apiserver-client
+  groups:
+  - system:authenticated
+  usages:
+  - digital signature
+  - key encipherment
+  - server auth
+  request: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURSBSRVFVRVNULS0tLS0KTUlJQ1ZqQ0NBVDRDQVFBd0VURVBNQTBHQTFVRUF3d0dZV3R6YUdGNU1JSUJJakFOQmdrcWhraUc5dzBCQVFFRgpBQU9DQVE4QU1JSUJDZ0tDQVFFQXlSRFBGc2ZTZUFaWUxDaUtDWlUrSElMNjRmM3RrbXVLdUpFWGNuOG9xTzRpCkhEU3hGNVIvRFVhUkNZUXpZcXVZMzhHdUFET2NDckNGN1lDK21iSVFWaUI4RDczK21LQytPa2Irc3ZhVVNLa0sKc2VWUHlWQWQ5dURCZUpyVUJVQzcrS1M1bmJPVFdoSXBkKzlpRTZQNTMxSWxqWFhiUDBwV0xWZURLZEE2bi9yNQpjUmZZdkZ4c2VHdGJUUGVESC9lU2hzb2VlOEVvU2lHUWQydVVHK0V2Uk1YZGV0UUVFWHRIQUU2cGdHNmtmUmxzCjFDSDJVcGZjNmh1aTFXL3VNM2tINjdDclJLaDVhZXgrc0psUTV2ekM1RlVhRDQ0bGhUaDhmVGlBWm5WWFkvVGIKUy9oS2p4NTJKMXl2bGJheFluRGdSSkFINHdodExrNHI5blZoamlvMDB3SURBUUFCb0FBd0RRWUpLb1pJaHZjTgpBUUVMQlFBRGdnRUJBRURmY3Z5VjNGSHEybFBYckxOb3I1bndWVFcraGdlcXdIZUNXU2dMdjdFMEM5d0ZyaWk4CkY5Z1VRZ1RlbzRWOEpqVXZGY1dYYjgyL3RSRmVYUHhwOXhrd3ZYUXNOZ3pNSlpscExLVlVTc1g5WE81S1JOMXMKSGRYYUl4cWlIemZlYmdETFVjOTFvdDNKNU9QSTN0RElRZUd3dEp6Qnlpa1lxSno5R2FCZ3dXeEdYVlY4SXVRego0d0k5eTR5SXhBTW5BUmxySmJham9hYW14L1pZeUZxZTZHUXI0YzRtaU9ESmNsaGVHSklpelFWb0Q1MjUxWFNuCjNYcTFBY3d5TStRT3YxWFV0eTY4bmhRYXhhaStWVUpQZTlUOGdPcTd4UFRZUGJDOHUwYkVqYjJpc1BBaE4yZlkKZ3p3SExubmU0NXNvMmZCTEhIZlNxOXlRTVdoaCtuTkdSN0U9Ci0tLS0tRU5EIENFUlRJRklDQVRFIFJFUVVFU1QtLS0tLQo=
+
+controlplane ~ ➜  
+```
+
  
   
+```
+kubectl certificate approve akshay
 
+kubectl describe certificatesigningrequests agent-smith
+
+kubectl get csr agent-smith -o yaml
+
+kubectl delete csr agent-smith
+
+kubectl certificate deny agent-smithj
+
+kubectl get csr
+
+
+```
 
