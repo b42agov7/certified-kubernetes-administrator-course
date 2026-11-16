@@ -3,33 +3,69 @@
   
 In this section, we will take a look at authentication in a kubernetes cluster
 
+A kubernetes cluster is made up of multiple nodes, physical or virtual, and multiple components that work together.
+
 ## Accounts
+
+In a cluster, there are several users. Admins, who perform administrative actions. Devellopers, who perform tests or deploy applications. End users, who contribute to applications. Third-party users (bots) who access the cluster for integration purposes.
 
   ![auth1](../../images/auth1.PNG)
   
 #### Different users that may be accessing the cluster security of end users who access the applications deployed on the cluster is managed by the applications themselves internally.
+
+The security of the End Users who access the applications hosted in the cluster is managed by the applications themselves.
+
+The remaining users are Admins, Developers, and Bots. They access the cluster for administrative reasons.
 
  ![acc1](../../images/acc1.PNG)
  
 - So, we left with 2 types of users
   - Humans, such as the Administrators and Developers
   - Robots such as other processes/services or applications that require access to the cluster.
-  
+
+Kubernetes does not natively manage user accounts, it relies on an external source such as a file with user details, certificates or third-party identity services such as LDAP to manage these users.
 
   ![acc2](../../images/acc2.PNG)
+
+
+However, Kubernetes manages Service Accounts
+
+```
+kubectl create serviceaccount sa1
+```
+
+```
+kubectl get serviceaccount
+```
   
 - All user access is managed by apiserver and all of the requests goes through apiserver.
+
+kube-apiserver authenticates requests before processing them.
  
   ![acc3](../../images/acc3.PNG)
   
 ## Authentication Mechanisms
 - There are different authentication mechanisms that can be configured.
 
+We can have:
+- Usernames and Tokens in a Static Token File
+- Certificates
+- Connect to third-party authentication protocol (LDAP, Kerberos, etc..) - Identity Services
+
   ![auth2](../../images/auth2.PNG)
   
 ## Authentication Mechanisms - Basic
   
   ![auth3](../../images/auth3.PNG)
+
+  In the case of the Static Password File, in CSV format, we can have 4 collones that detail the password, sername, uid and group. In the case of the Static Token File instead of the Token, we have Tokens.
+
+  If you want to use this authentication method, you will need to specify the '--token-auth-details.csv' option to the kube-apiserver
+
+  If we use this method, during authentication, we will have to specify our token in this way
+```
+curl -v -k https://master-node-ip:6443/api/v1/pods --header "Authorization: Bearer <TOKEN>"
+```
   
 ## kube-apiserver configuration
 - If you set up via kubeadm then update kube-apiserver.yaml manifest file with the option.
