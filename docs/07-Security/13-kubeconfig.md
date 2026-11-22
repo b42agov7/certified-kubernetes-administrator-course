@@ -210,3 +210,27 @@ Use a custom kubeconfig file:
 Bash
 
 kubectl get pods --kubeconfig /path/to/custom-kubeconfig.yaml
+
+
+
+## Other
+
+faire en sorte que kubectl utilise un autre config file sans modifier le config de base
+
+Point the KUBECONFIG environment variable at my-kube-config (do not overwrite ~/.kube/config).
+
+    Add the export to your shell startup file:
+
+vi ~/.bashrc
+
+export KUBECONFIG=/root/my-kube-config
+# OR
+export KUBECONFIG=~/my-kube-config
+# OR
+export KUBECONFIG=$HOME/my-kube-config
+
+Other startup files (~/.bash_profile, /etc/profile.d/*.sh) and multi-line exports also work.
+
+    Reload in the current session:
+
+source ~/.bashrc
