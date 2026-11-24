@@ -208,3 +208,10 @@ in a particular namespace alone with cluster roles.
 When you authorize a user to access the pods, the user gets access to all pods across the cluster.
 
 Kubernetes creates a number of cluster roles by default when the cluster is first set up.
+
+Lister les cluster role et les cluster role binding:
+```
+kubectl get clusterroles
+
+kubectl get clusterrolebindings
+```
