@@ -104,4 +104,250 @@ acceptable to you. for that
 - https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/
  
   
-  
+  ---
+
+  Dans kubernetes, il existe 2 types de compatible
+
+- User account, utilié par des humains (admin, developer)
+- Service account, utilisé par des machines (peut être une application qui intéragit avec le cluster kubernetes prometheus ou jenkins)
+
+
+Un service account est l'identité d'un compte, il permet au service de pouvoir s'identifier au pres du cluster.
+
+A service account is associated with what is known as a token.
+
+A token is what is used to authenticate a service account into the Kubernetes API.
+
+So if you have ever authenticated to an API using a curl command or something that you probably know
+
+of, the tokens that are passed through as a bearer token in the header of the call.
+
+This token is what proves the identity of the service account to the API endpoint.
+
+
+By default, when a Kubernetes cluster is set up, it creates a service account by the name default
+
+in all namespaces.
+
+pour lister les services accounts:
+```
+kubectl get serviceaccount
+```
+To see the details of an existing service account:
+```
+kubectl describe serviceaccount default
+```
+
+Whenever a pod is created, the default service account is automatically attached to the pod.
+```
+kubectl describe pod my-pod
+```
+
+So the service account gets mounted as a projected volume within the pod.
+
+So think of a projected volume as a dynamic directory created inside the pod by Kubernetes automatically.
+
+So it is mounted at the location:
+`/var/run/secrets/kubernetes.io/serviceaccount`
+
+```
+                                 +-------------------------------+
+                                 |              Pod              |
+                                 |                               |
+                                 |    my-kubernetes-dashboard    |
+                                 |                               |
+                                 |  +-------------------------+  |
+                                 |  |    /var/run/secrets     |  |
+                                 |  |     /kubernetes.io      |  |
+                                 |  |     /serviceaccount     |  |
+                                 |  +-------------------------+  |
+                                 |               |               |
++-------------------------+      |               |               |
+| Service Account         |      |            .-----.            |
+|                         |      |           (_______)           |
+|         Default --------+------+---------- |_______|           |
+|                         |      |           |_______|           |
+|                         |      |           (_______)           |
++-------------------------+      +-------------------------------+
+```
+
+
+
+Now if you list the contents of this directory, you'll see the token available as a file, and if you
+
+look inside the contents of the file, you'll see the actual token itself.
+
+```
+kubectl exec -it my-kubernetes-dashboard ls /var/run/secrets/kubernetes.io/serviceaccount
+```
+
+The default service account comes with a lot of limitations, so if you have specific access requirements
+
+we must create a custom service account.
+
+## Create a Service Account
+
+```
+kubectl create serviceaccount my-account-name
+
+kubectl create serviceaccount dashboard-sa
+```
+
+or in a declarative way:
+```
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: dashboard-sa
+  namespace: default
+```
+
+to view service accounts:
+```
+kubectl get serviceaccount
+```
+
+to list details of a service account:
+```
+kubectl describe serviceaccount dashboard-sa
+```
+
+As you can see, when you first create a service account, it creates a blank service account with most
+
+of its properties set to none.
+
+So to associate a newly created service account to a pod, we pass the name of the service account using
+
+the service account name field in the pod spec.
+
+```
+apiVersion: v1
+kind: Pod
+metadata:
+  name: my-kubernetes-dashboard
+spec:
+  containers:
+    - name: my-kubernetes-dashboard
+      image: my-kubernetes-dashboard
+  serviceAccountName: dashboard-sa
+```
+
+This time when we describe the pod, we see the dashboard service account associated with it.
+
+And if you look inside the mounted directory, you get to see the token file.
+
+Kubernetes automatically creates a short lived token and mounts it inside a projected volume.
+
+The Kubelet also automatically rotates this token, and this token is bound to the life of the pod,
+
+so it is automatically expired when the pod is deleted.
+
+Now, if you don't want a token to be automatically created and mounted inside the pod for the service
+
+account, you may add the auto mount Service account token key to false like this.
+
+```
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: dashboard-sa
+  namespace: default
+automountServiceAccountToken: false
+```
+
+You can define this either at the service account level.
+
+That way, no pods that use the service account gets the service account token auto mounted.
+
+
+Or you can define it at the pod definition level so that irrespective of whether this property is set
+
+at the service account level, it won't be auto mounted for that pod.
+```
+apiVersion: v1
+kind: Pod
+metadata:
+  name: my-kubernetes-dashboard
+spec:
+  containers:
+    - name: my-kubernetes-dashboard
+      image: my-kubernetes-dashboard
+  serviceAccountName: dashboard-sa
+  automountServiceAccountToken: false
+```
+Now, for the pods or applications hosted within the Kubernetes cluster.
+
+This setup that we've discussed so far works fine.
+
+So the pod is associated to a service account, and as soon as the pod is associated to a service account,
+
+Kubernetes automatically creates a token with an expiry date and automatically mounts that within the
+
+pod at a particular location, which the application running inside the pod can refer to and read from
+
+to make API calls to Kubernetes.
+
+At times, you might want to create a token that is to be used outside of the cluster, maybe to paste
+
+into the Kubernetes dashboard that we had created, or to put it into a CI CD tool or an external monitoring
+
+tool.
+
+In such cases, you can create a token by running the kubectl create token command.
+
+```
+kubectl create token dashboard-sa
+```
+
+It creates a token and shares it on screen.
+
+And this token is not stored in any secret.
+
+By default, all tokens are valid for one hour to extend the validity.
+
+Add a duration flag to the command.
+
+```
+kubectl create token dashboard-sa --duration 2h
+```
+
+If you decode this token using the jq and the base64 utility, you'll see an expiry defined as well
+
+as the service account name and other details that are associated with this token.
+
+This token can then be used as an authentication bearer token while making a Rest call to the Kubernetes
+
+API.
+
+```
+jq -R 'split(".") | select(length > 0) | .[0],.[1] | @base64d | fromjson' <<< eyJhbGciOiJSUz...
+```
+
+Summary   
+Service Accounts are used by other applications or services to interact with Kubernetes   
+
+Tokens are created for service accounts to prove identity.   
+
+To create a new service account run   
+
+```
+kubectl create serviceaccount dashboard-sa
+```
+
+To use the Service Account from an external application (CI/CD, monitoring tools)
+
+```
+kubectl create token dashboard-sa --duration 2h
+```
+
+Every namespace has a default service account   
+
+The default service account is automatically attached to the pod on creation.   
+
+To attach a service account to a pod use serviceAccountName field   
+
+When a service account is attached to a pod, Kubernetes:   
+
+Automatically creates a token and mounts as a projected volume   
+Automatically rotates token   
+Automatically expires then token when the pod is deleted  
